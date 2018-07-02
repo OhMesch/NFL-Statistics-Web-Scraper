@@ -11,7 +11,7 @@ class Logger:
         self.createLogFolderIfDoesntExist()
 
     def createLogFolderIfDoesntExist(self):
-        logsFolder = os.path.join(os.getcwd(), './Logs')
+        logsFolder = os.path.join(os.getcwd(), 'Logs')
         if(not os.path.isdir(logsFolder)):
             os.makedirs(logsFolder)
 
