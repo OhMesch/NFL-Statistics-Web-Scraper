@@ -20,9 +20,9 @@ class Logger:
 
     def printLn(self, logEntry):
         logPath = self.getLogPath()
-        LINE_PREFEX = self.getLinePrefix()
+        linePrefix = self.getLinePrefix()
         logFile = open(logPath, 'a+')
-        logFile.write(LINE_PREFEX + logEntry+'\n')
+        logFile.write(linePrefix + logEntry+'\n')
         logFile.close()
 
     def getLinePrefix(self):
