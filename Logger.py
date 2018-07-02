@@ -1,6 +1,6 @@
 import os
 import time
-from datetime import datetime, timedelta
+from datetime import datetime
 
 class Logger:
     def __init__(self):
@@ -31,3 +31,6 @@ class Logger:
         runTimeM = runTime.seconds // 60
         runTimeS = runTime.seconds % 3600
         return('[%02d:%02d:%02d] ' % (runTimeH, runTimeM, runTimeS))
+
+driver = Logger()
+driver.printLn("Test")
