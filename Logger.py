@@ -6,7 +6,7 @@ class Logger:
     def __init__(self):
         self.initTime = datetime.now()
         self.logsFolder = os.path.join(os.getcwd(), 'Logs')
-        self.logPath = os.path.join(self.logsFolder,self.initTime.strftime('%m-%d_%H:%M:%S.txt'))
+        self.logPath = os.path.join(self.logsFolder,self.initTime.strftime('%m-%d_%H:%M.txt'))
 
         self.createLogFolderIfDoesntExist()
 
