@@ -1,12 +1,16 @@
 import requests
 import re
 from bs4 import BeautifulSoup
+from Logger import Logger
 
 class nflScraper:
 	def __init__(self):
 		self.visitsCount = 0
-		self.visitsLimit = 20
+		self.visitsLimit = 300
+		self.playerLinks = []
+		self.BASE_SITE = "http://www.nfl.com"
 		self.seenUrls = set()
+		self.logger = Logger()
 
 	def updatevisitsCount(self):
 		self.visitsCount += 1
@@ -14,20 +18,44 @@ class nflScraper:
 	def visitsCountIsAcceptable(self):
 		return self.visitsCount <= self.visitsLimit
 
-	def connectToUrl(self, url):
+	def scrapeUrlForLinks(self, url):
 		self.updatevisitsCount()
 		if(self.visitsCountIsAcceptable()):
-			code = requests.get(url)
-			htmlInPlainText = code.text
-			htmlSoup = BeautifulSoup(htmlInPlainText, "html.parser")
-			print(htmlSoup.title.string)
-			for link in htmlSoup.find_all(href=re.compile("player/|lastName")):
-				cleanLink = link.get('href')
-				if cleanLink not in self.seenUrls:
-					print(cleanLink)
-					self.seenUrls.add(cleanLink)
-					# print(link.get('href'))
-					# self.connectToUrl(cleanLink)
+			try:
+				htmlSoup = self.getHTMLFromURL(url)
+			except requests.exceptions.RequestException as err:
+				self.logger.printLn("Unable to reach {}:\n{}\n".format(url,err))
+			else:
+				additionLinks = self.getLinksFromHTML(htmlSoup)
+
+	def getHTMLFromURL(self, url):
+		code = requests.get(url)
+		htmlInPlainText = code.text
+		htmlSoup = BeautifulSoup(htmlInPlainText, "html.parser")
+		# print(htmlSoup.title.string)
+		return(htmlSoup)
+
+	def getLinksFromHTML(self, html):
+		playerLinks = []
+		for link in html.find_all(href=re.compile("player/|lastName")):
+			newUrl = link.get('href')
+			if newUrl not in self.seenUrls:
+				self.seenUrls.add(newUrl)
+				self.sortLink(newUrl)
+
+	def sortLink(self, link):
+		first8Char = link[:8]
+		if first8Char == "/player/":
+			self.playerLinks.append(link)
+		elif first8Char == "/players":
+			self.scrapeUrlForLinks(self.BASE_SITE+link)
+		else:
+			self.logger.printLn("Unexpected link detected:\n%s\n" % link)
+
+	def getPlayerLinkList(self):
+		return(self.playerLinks)
 
 driver = nflScraper()
-driver.connectToUrl("http://www.nfl.com/players/search?category=lastName&filter=A&playerType=current")
+for i in range(97,97+26):
+	driver.scrapeUrlForLinks("http://www.nfl.com/players/search?category=lastName&playerType=current&d-447263-p=1&filter=%s" %chr(i))
+driver.printPlayers()
