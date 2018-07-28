@@ -1,7 +1,6 @@
 import requests
 import re
 from bs4 import BeautifulSoup
-import pandas as pd
 
 class TableParser:
 	def __init__(self, table):
@@ -60,6 +59,12 @@ class TableParser:
 				
 			currLine += 1
 			currText = tdTags[currLine].text.strip()
+
+	def getTableString(self):
+		tableString = ', '.join(self.tableColumnNames) + "\n"
+		for row in self.tableRowValues:
+			tableString += ', '.join(row)+"\n"
+		return(tableString)
 
 	def printTableTitle(self):
 		print(self.tableTitle)
