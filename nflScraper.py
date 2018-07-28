@@ -26,6 +26,7 @@ class nflScraper:
 			except requests.exceptions.RequestException as err:
 				self.logger.printLn("Unable to reach {}:\n{}\n".format(url,err))
 			else:
+				#is additionalLinks used?
 				additionLinks = self.getLinksFromHTML(htmlSoup)
 
 	def getHTMLFromURL(self, url):
@@ -54,8 +55,3 @@ class nflScraper:
 
 	def getPlayerLinkList(self):
 		return(self.playerLinks)
-
-driver = nflScraper()
-for i in range(97,97+26):
-	driver.scrapeUrlForLinks("http://www.nfl.com/players/search?category=lastName&playerType=current&d-447263-p=1&filter=%s" %chr(i))
-driver.printPlayers()
