@@ -60,6 +60,9 @@ class TableParser:
 			currLine += 1
 			currText = tdTags[currLine].text.strip()
 
+	def getTableTitle(self):
+		return(self.tableTitle)
+
 	def getTableString(self):
 		tableString = ', '.join(self.tableColumnNames) + "\n"
 		for row in self.tableRowValues:
