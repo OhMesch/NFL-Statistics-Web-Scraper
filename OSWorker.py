@@ -36,3 +36,6 @@ class OSWorker:
 	def isExistingPath(path):
 		fullFilePath = OSWorker.getAbsolutePath(path)
 		return(os.path.exists(fullFilePath))
+
+	def pathJoin(basePath, additionPath):
+		return(os.path.join(basePath,additionPath))
