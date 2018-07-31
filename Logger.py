@@ -1,5 +1,4 @@
 import time
-import os
 from datetime import datetime
 from OSWorker import OSWorker
 
@@ -7,7 +6,7 @@ class Logger:
     def __init__(self):
         self.initTime = datetime.now()
         self.logsFolder = OSWorker.getAbsolutePath('Logs')
-        self.logPath = os.path.join(self.logsFolder,self.initTime.strftime('%m-%d_%H:%M.txt'))
+        self.logPath = OSWorker.joinPath(self.logsFolder,self.initTime.strftime('%m-%d_%H:%M.txt'))
 
         self.createLogFolderIfDoesntExist()
 
