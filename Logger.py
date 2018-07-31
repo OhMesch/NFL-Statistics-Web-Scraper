@@ -14,15 +14,15 @@ class Logger:
         if(not OSWorker.isExistingPath('Logs')):
             OSWorker.createFolder('Logs')
 
-    def getLogPath(self):
-        return(self.logPath)
-
     def printLn(self, logEntry):
         logPath = self.getLogPath()
         linePrefix = self.getLinePrefix()
         logFile = open(logPath, 'a+')
         logFile.write(linePrefix + logEntry+'\n')
         logFile.close()
+
+    def getLogPath(self):
+        return(self.logPath)
 
     def getLinePrefix(self):
         runTime = datetime.now() - self.initTime
