@@ -35,7 +35,8 @@ class nflScraper:
 	def sortLink(self, link):
 		first8Char = link[:8]
 		if first8Char == "/player/":
-			self.playerLinks.append(link)
+			newPlayerLink = link
+			self.playerLinks.append(newPlayerLink)
 		elif first8Char == "/players":
 			nextPage = self.BASE_SITE+link
 			self.scrapeUrlForLinks(nextPage)
