@@ -37,5 +37,5 @@ class OSWorker:
 		fullFilePath = OSWorker.getAbsolutePath(path)
 		return(os.path.exists(fullFilePath))
 
-	def pathJoin(basePath, additionPath):
+	def joinPath(basePath, additionPath):
 		return(os.path.join(basePath,additionPath))
