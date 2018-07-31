@@ -43,5 +43,5 @@ class nflScraper:
 		else:
 			self.logger.printLn("Unexpected link detected:\n%s\n" % link)
 
-	def getPlayerLinkList(self):
+	def getPlayerLinks(self):
 		return(self.playerLinks)
