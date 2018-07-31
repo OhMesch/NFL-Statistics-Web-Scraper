@@ -8,28 +8,31 @@ class OSWorker:
 	#What happens if somebody passes in a full file path?
 
 	def appendToFile(filePath, contentToAdd):
-		fullFilePath = os.path.join(os.getcwd(),filePath)
+		fullFilePath = OSWorker.getAbsolutePath(filePath)
 		file = open(fullFilePath, "a")
 		file.write(contentToAdd)
 		file.close()
 
 	def createFile(filePath):
-		fullFilePath = os.path.join(os.getcwd(),filePath)
+		fullFilePath = OSWorker.getAbsolutePath(filePath)
 		file = open(fullFilePath,"w+")
 		file.close()
 
 	def createFolder(folderPath):
-		fullFolderPath = os.path.join(os.getcwd(),folderPath)
+		fullFolderPath = OSWorker.getAbsolutePath(folderPath)
 		os.makedirs(fullFolderPath)
 
 	def deleteFile(filePath):
-		fullFilePath = os.path.join(os.getcwd(),filePath)
+		fullFilePath = OSWorker.getAbsolutePath(filePath)
 		os.remove(fullFilePath)
 
 	def deleteFolder(filePath):
-		fullFilePath = os.path.join(os.getcwd(),filePath)
+		fullFilePath = OSWorker.getAbsolutePath(filePath)
 		os.rmdir(fullFilePath)
 
+	def getAbsolutePath(local):
+		return(os.path.join(os.getcwd(),local))
+
 	def isExistingPath(path):
-		fullFilePath = os.path.join(os.getcwd(),path)
+		fullFilePath = OSWorker.getAbsolutePath(path)
 		return(os.path.exists(fullFilePath))
