@@ -12,7 +12,7 @@ class Logger:
         self.createLogFolderIfDoesntExist()
 
     def createLogFolderIfDoesntExist(self):
-        if(not isExistingPath('Logs')):
+        if(not OSWorker.isExistingPath('Logs')):
             OSWorker.createFolder('Logs')
 
     def getLogPath(self):
