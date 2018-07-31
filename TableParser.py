@@ -46,8 +46,8 @@ class TableParser:
 		self.tableRowValues = []
 		while currLine < len(tdTags) and currText != "TOTAL":
 			if currText:
-				if dataCounter < numColumns:
-					currRow.append(currText)
+				currRow.append(currText)
+				if dataCounter < numColumns - 1:
 					dataCounter += 1
 				else:
 					self.tableRowValues.append(currRow)
