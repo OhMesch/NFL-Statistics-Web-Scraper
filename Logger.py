@@ -1,19 +1,19 @@
-import os
 import time
+import os
 from datetime import datetime
+from OSWorker import OSWorker
 
 class Logger:
     def __init__(self):
         self.initTime = datetime.now()
-        self.logsFolder = os.path.join(os.getcwd(), 'Logs')
+        self.logsFolder = OSWorker.getAbsolutePath('Logs')
         self.logPath = os.path.join(self.logsFolder,self.initTime.strftime('%m-%d_%H:%M.txt'))
 
         self.createLogFolderIfDoesntExist()
 
     def createLogFolderIfDoesntExist(self):
-        logsFolder = os.path.join(os.getcwd(), 'Logs')
-        if(not os.path.isdir(logsFolder)):
-            os.makedirs(logsFolder)
+        if(not isExistingPath('Logs')):
+            OSWorker.createFolder('Logs')
 
     def getLogPath(self):
         return(self.logPath)
