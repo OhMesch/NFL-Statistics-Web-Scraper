@@ -2,8 +2,6 @@ import requests
 import re
 from bs4 import BeautifulSoup
 
-#Currently a bug in here with writing table rows
-
 class TableParser:
 	def __init__(self, table):
 		self.table = table
@@ -15,9 +13,6 @@ class TableParser:
 		self.autoSetTableTitle()
 		self.autoSetColumnNames()
 		self.autoFillRows()
-		self.printTableTitle()
-		self.printRowNames()
-		self.printTable()
 
 	def autoSetTableTitle(self):
 		self.tableTitle = self.table.find('div').text.strip()
@@ -38,8 +33,6 @@ class TableParser:
 			currText = tdTags[currLine].text.strip()
 
 	def autoFillRows(self):
-		numColumns = len(self.tableColumnNames)
-		self.tableRowValues = []
 		tdTags = self.table.find_all('td')
 		currLine = 1
 		currText = tdTags[currLine].text.strip()
@@ -47,12 +40,14 @@ class TableParser:
 			currLine += 1
 			currText = tdTags[currLine].text.strip()
 
+		numColumns = len(self.tableColumnNames)
 		dataCounter = 0
 		currRow = []
+		self.tableRowValues = []
 		while currLine < len(tdTags) and currText != "TOTAL":
 			if currText:
-				if dataCounter < 13:
-					currRow.append(currText)
+				currRow.append(currText)
+				if dataCounter < numColumns - 1:
 					dataCounter += 1
 				else:
 					self.tableRowValues.append(currRow)

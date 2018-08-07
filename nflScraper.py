@@ -4,29 +4,19 @@ from bs4 import BeautifulSoup
 from Logger import Logger
 
 class nflScraper:
-	def __init__(self):
-		self.visitsCount = 0
-		self.visitsLimit = 1000
+	def __init__(self, loggerObj):
 		self.playerLinks = []
 		self.BASE_SITE = "http://www.nfl.com"
 		self.seenUrls = set()
-		self.logger = Logger()
-
-	def updatevisitsCount(self):
-		self.visitsCount += 1
-
-	def visitsCountIsAcceptable(self):
-		return self.visitsCount <= self.visitsLimit
+		self.logger = loggerObj
 
 	def scrapeUrlForLinks(self, url):
-		self.updatevisitsCount()
-		if(self.visitsCountIsAcceptable()):
-			try:
-				htmlSoup = self.getHTMLFromURL(url)
-			except requests.exceptions.RequestException as err:
-				self.logger.printLn("Unable to reach {}:\n{}\n".format(url,err))
-			else:
-				additionLinks = self.getLinksFromHTML(htmlSoup)
+		try:
+			htmlSoup = self.getHTMLFromURL(url)
+		except requests.exceptions.RequestException as err:
+			self.logger.printLn("Unable to reach {}:\n{}\n".format(url,err))
+		else:
+			self.getLinksFromHTML(htmlSoup)
 
 	def getHTMLFromURL(self, url):
 		code = requests.get(url)
@@ -45,11 +35,13 @@ class nflScraper:
 	def sortLink(self, link):
 		first8Char = link[:8]
 		if first8Char == "/player/":
-			self.playerLinks.append(link)
+			newPlayerLink = link
+			self.playerLinks.append(newPlayerLink)
 		elif first8Char == "/players":
-			self.scrapeUrlForLinks(self.BASE_SITE+link)
+			nextPage = self.BASE_SITE+link
+			self.scrapeUrlForLinks(nextPage)
 		else:
 			self.logger.printLn("Unexpected link detected:\n%s\n" % link)
 
-	def getPlayerLinkList(self):
+	def getPlayerLinks(self):
 		return(self.playerLinks)

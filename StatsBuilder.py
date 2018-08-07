@@ -4,10 +4,12 @@ from bs4 import BeautifulSoup
 from TableParser import TableParser
 from OSWorker import OSWorker
 from CSVWriter import CSVWriter
+from Logger import Logger
 
 class StatsBuilder:
     def __init__(self, foldername):
         self.PARENT_FOLDER = foldername
+        self.logger = Logger()
 
     def buildStatCSV(self):
         allPlayerURLs = self.getAllPlayerURLs()
@@ -19,11 +21,13 @@ class StatsBuilder:
 
             self.buildPlayerStats(playerCareerURL, playerName)
 
+        self.logger.printLn("CSV Stat Building Complete")
+
     def getAllPlayerURLs(self):
-        scraper = nflScraper()
+        scraper = nflScraper(self.logger)
         for i in range(ord("a"),ord("z")+1):
             scraper.scrapeUrlForLinks("http://www.nfl.com/players/search?category=lastName&playerType=current&d-447263-p=1&filter=%s" %chr(i))
-        allPlayerURLs = scraper.getPlayerLinkList()
+        allPlayerURLs = scraper.getPlayerLinks()
         return(allPlayerURLs)
 
     def getPlayerNameFromURL(self, playerURL):
@@ -42,7 +46,7 @@ class StatsBuilder:
         try:
             htmlSource = self.getHTMLSource(careerURL)
         except requests.exceptions.RequestException as err:
-            print(err)
+            self.logger.printLn(err)
         else:
             tableSet = htmlSource.find_all("table")
             newFolder = self.PARENT_FOLDER+"/"+playerName

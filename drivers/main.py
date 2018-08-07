@@ -4,11 +4,13 @@ from bs4 import BeautifulSoup
 from TableParser import TableParser
 from OSWorker import OSWorker
 from CSVWriter import CSVWriter
+from Logger import Logger
 
-scraper = nflScraper()
+logger = Logger()
+scraper = nflScraper(logger)
 for i in range(97,97+26):
 	scraper.scrapeUrlForLinks("http://www.nfl.com/players/search?category=lastName&playerType=current&d-447263-p=1&filter=%s" %chr(i))
-allPlayerURLs = scraper.getPlayerLinkList()
+allPlayerURLs = scraper.getPlayerLinks()
 
 for playerURL in allPlayerURLs:
 	playerURL = "http://www.nfl.com"+playerURL
@@ -23,7 +25,7 @@ for playerURL in allPlayerURLs:
 	    htmlInPlainText = code.text
 	    htmlSoup = BeautifulSoup(htmlInPlainText, "html.parser")
 	except requests.exceptions.RequestException as err:
-		print(err)
+		logger.printLn(err)
 	else:
 		tableSet = htmlSoup.find_all("table")
 		newFolder = "PlayerStats/"+playerName

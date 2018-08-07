@@ -12,6 +12,7 @@ class CSVWriter:
 		tableString = tableObj.getTableString()
 
 		newFile = self.PARENT_FOLDER+"/"+tableTitle
+		print(newFile)
 		if OSWorker.isExistingPath(newFile):
 			OSWorker.deleteFile(newFile)
 		OSWorker.createFile(newFile)
