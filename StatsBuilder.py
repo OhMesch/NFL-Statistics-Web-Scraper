@@ -1,0 +1,61 @@
+import requests
+from nflScraper import nflScraper
+from bs4 import BeautifulSoup
+from TableParser import TableParser
+from OSWorker import OSWorker
+from CSVWriter import CSVWriter
+
+class StatsBuilder:
+    def __init__(self, foldername):
+        self.PARENT_FOLDER = foldername
+
+    def buildStatCSV(self):
+        allPlayerURLs = self.getAllPlayerURLs()
+
+        for playerURL in allPlayerURLs:
+            playerURL = "http://www.nfl.com"+playerURL
+            playerName = self.getPlayerNameFromURL(playerURL)
+            playerCareerURL = self.playerURLToCareerURL(playerURL)
+
+            self.buildPlayerStats(playerCareerURL, playerName)
+
+    def getAllPlayerURLs(self):
+        scraper = nflScraper()
+        for i in range(ord("a"),ord("z")+1):
+            scraper.scrapeUrlForLinks("http://www.nfl.com/players/search?category=lastName&playerType=current&d-447263-p=1&filter=%s" %chr(i))
+        allPlayerURLs = scraper.getPlayerLinkList()
+        return(allPlayerURLs)
+
+    def getPlayerNameFromURL(self, playerURL):
+        splitPlayerURL = playerURL.split("/")
+        playerName = splitPlayerURL[4]
+        return(playerName)
+
+    def playerURLToCareerURL(self, playerURL):
+        splitPlayerURL = playerURL.split("/")
+        playerName = splitPlayerURL[4]
+        playerCareerURL = splitPlayerURL[:-1]+["careerstats"]
+        playerCareerURL = "/".join(playerCareerURL)
+        return(playerCareerURL)
+
+    def buildPlayerStats(self, careerURL, playerName):
+        try:
+            htmlSource = self.getHTMLSource(careerURL)
+        except requests.exceptions.RequestException as err:
+            print(err)
+        else:
+            tableSet = htmlSource.find_all("table")
+            newFolder = self.PARENT_FOLDER+"/"+playerName
+            
+            if not OSWorker.isExistingPath(newFolder):
+                OSWorker.createFolder(newFolder)
+
+            writer = CSVWriter(newFolder)
+            for table in tableSet:
+                writer.writeTableToCSV(table)
+
+    def getHTMLSource(self, url):
+        code = requests.get(url)
+        htmlInPlainText = code.text
+        htmlSoup = BeautifulSoup(htmlInPlainText, "html.parser")
+        return(htmlSoup)
