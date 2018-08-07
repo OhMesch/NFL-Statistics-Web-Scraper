@@ -1,14 +1,18 @@
 from OSWorker import OSWorker
+from TableParser import TableParser
 
 class CSVWriter:
-	def __init__():
-		self.PARENT_FOLDER = "PlayerStats"
+	def __init__(self, folderPath):
+		self.PARENT_FOLDER = folderPath
 
-	def createNewPlayerFolder(folderName):
-		newFolder = self.PARENT_FOLDER + "/" + folderName
-		if OSWorker.isExistingPath(newFolder):
-			OSWorker.deleteFolder(newFolder)
-		OSWorker.createFolder(newFolder)
+	def writeTableToCSV(self, table):
+		tableObj = TableParser(table)
+		tableObj.parseTable()
+		tableTitle = tableObj.getTableTitle()
+		tableString = tableObj.getTableString()
 
-	def createNewPlayerCSV(self, fileName, contents):
-		pass
+		newFile = self.PARENT_FOLDER+"/"+tableTitle
+		if OSWorker.isExistingPath(newFile):
+			OSWorker.deleteFile(newFile)
+		OSWorker.createFile(newFile)
+		OSWorker.appendToFile(newFile,tableString)
