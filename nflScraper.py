@@ -6,7 +6,7 @@ from Logger import Logger
 class nflScraper:
 	def __init__(self):
 		self.visitsCount = 0
-		self.visitsLimit = 10
+		self.visitsLimit = 1000
 		self.playerLinks = []
 		self.BASE_SITE = "http://www.nfl.com"
 		self.seenUrls = set()
@@ -26,15 +26,12 @@ class nflScraper:
 			except requests.exceptions.RequestException as err:
 				self.logger.printLn("Unable to reach {}:\n{}\n".format(url,err))
 			else:
-				#is additionalLinks used?
-				#are we only looking at first page?
 				additionLinks = self.getLinksFromHTML(htmlSoup)
 
 	def getHTMLFromURL(self, url):
 		code = requests.get(url)
 		htmlInPlainText = code.text
 		htmlSoup = BeautifulSoup(htmlInPlainText, "html.parser")
-		# print(htmlSoup.title.string)
 		return(htmlSoup)
 
 	def getLinksFromHTML(self, html):
