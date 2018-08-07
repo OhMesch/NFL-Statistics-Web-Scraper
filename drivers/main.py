@@ -3,6 +3,7 @@ from nflScraper import nflScraper
 from bs4 import BeautifulSoup
 from TableParser import TableParser
 from OSWorker import OSWorker
+from CSVWriter import CSVWriter
 
 scraper = nflScraper()
 for i in range(97,97+26):
@@ -29,14 +30,6 @@ for playerURL in allPlayerURLs:
 		if not OSWorker.isExistingPath(newFolder):
 			OSWorker.createFolder(newFolder)
 
+		writer = CSVWriter()
 		for table in tableSet:
-			tableObj = TableParser(table)
-			tableObj.parseTable()
-			tableTitle = tableObj.getTableTitle()
-			tableString = tableObj.getTableString()
-			newFile = newFolder+"/"+tableTitle
-			if OSWorker.isExistingPath(newFile):
-				OSWorker.deleteFile(newFile)
-			OSWorker.createFile(newFile)
-			OSWorker.appendToFile(newFile,tableString)
-
+			writer.writeTableToCSV(table)
