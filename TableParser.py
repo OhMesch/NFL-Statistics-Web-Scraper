@@ -2,6 +2,8 @@ import requests
 import re
 from bs4 import BeautifulSoup
 
+#Currently a bug in here with writing table rows
+
 class TableParser:
 	def __init__(self, table):
 		self.table = table
